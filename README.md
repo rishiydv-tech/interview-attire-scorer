@@ -24,9 +24,21 @@ interview-attire-scorer/
 │   └── utils/           # shared helpers (FPS counter, etc.)
 ├── data/
 │   ├── raw/              # unlabeled collected images (Step 4)
-│   └── labeled/          # manually tagged images (Step 4)
+│   │   ├── shoes_raw/        # Boot/Sandal/Shoe (Kaggle, unsorted)
+│   │   ├── pants_raw/        # Apparel dataset pants, color-prefixed (Kaggle, unsorted)
+│   │   ├── beard_raw/        # Facial Hair Classification dataset (Kaggle, unsorted)
+│   │   ├── tucked_raw/       # manually collected
+│   │   ├── untucked_raw/     # manually collected
+│   │   ├── groomed_raw/      # hair — manually collected
+│   │   └── messy_raw/        # hair — manually collected
+│   └── labeled/          # manually sorted/filtered images (Step 4)
+│       ├── shoes/            # formal/, sports/
+│       ├── pants/            # formal/, jeans/
+│       ├── shirt/            # tucked/, untucked/
+│       ├── hair/             # groomed/, messy/
+│       └── beard/            # groomed/, ungroomed/
 ├── models/               # trained MobileNetV2 weights (Step 5)
-├── notebooks/            # optional Jupyter experiments
+├── notebooks/            # optional Jupyter experiments (incl. download_data.py)
 ├── tests/                # test files (Step 9)
 ├── docs/                 # extra documentation
 ├── requirements.txt
@@ -75,8 +87,18 @@ interview-attire-scorer/
 **Errors encountered:**
 - Initial draft called `pose.process()` on an undefined variable at module level instead of inside the function — fixed by moving the call inside `get_landmarks()` using the `person_crop` parameter.
 
-### ⬜ Step 4: Dataset Collection & Labeling
-_Not started yet. (Start early — takes the most time, run in parallel with Steps 1-3.)_
+### 🟡 Step 4: Dataset Collection & Labeling (in progress)
+No single public dataset matches our exact attributes, so each category is built either from a filtered public (Kaggle) dataset or manual collection — raw data goes into `data/raw/<category>_raw/`, filtering/sorting into `data/labeled/<category>/<class>/` happens afterward, one category at a time.
+
+- **Shoes** — ✅ raw copy done. Source: `hasibalmuzdadid/shoe-vs-sandal-vs-boot-dataset-15k-images` (Boot/Sandal/Shoe). Copied into `data/raw/shoes_raw/`. Filtering into `formal/` (Boot) and `sports/` (Shoe, pending check) not started yet.
+- **Pants** — ✅ raw copy done (2789 images). Source: `trolukovich/apparel-images-dataset`, all `*_pants` color folders copied with color-prefixed filenames into `data/raw/pants_raw/` to avoid overwrite. Filtering into `formal/` vs `jeans/` not started yet.
+- **Beard** — ✅ raw copy done. Source: `trainingdatapro/facial-hair-classification-dataset` (beard/no-beard), copied into `data/raw/beard_raw/`. Proxy mapping planned: no-beard + trimmed → `groomed/`, unkempt/full → `ungroomed/` (manual sort pending).
+- **Shirt tuck/untuck** — 🟡 manual collection in progress (no public dataset exists for this). Raw images going into `data/raw/tucked_raw/` and `data/raw/untucked_raw/`.
+- **Hair (groomed/messy)** — 🟡 manual collection in progress (no public dataset exists for this either). Raw images going into `data/raw/groomed_raw/` and `data/raw/messy_raw/`.
+
+**Notes:**
+- Public datasets download via `kagglehub` (see `notebooks/download_data.py`); Kaggle API token set as `KAGGLE_API_TOKEN` env var, never committed to the repo.
+- Strategy agreed: collect all raw data per category first, filter/sort into final labeled folders afterward — all categories get filtered together once raw collection is complete.
 
 ### ⬜ Step 5: MobileNetV2 Classifiers
 _Not started yet._
@@ -105,7 +127,10 @@ _Not started yet. (Target 15-20 FPS, test different lighting/backgrounds, handle
 - **Git/GitHub:** Tool for sharing/tracking code across the team.
 - **Virtual Environment:** Isolated "box" holding only this project's packages.
 - **FPS:** Frames processed per second — measure of real-time speed.
+- **kagglehub:** Python library to download datasets directly from Kaggle via API token.
+- **Proxy category:** A public dataset's existing labels reused/remapped to approximate a category we actually need (e.g. "no beard" → "groomed").
 
 ## Milestones
 - 23/09/26 | 9:39 — `ultralytics`, `mediapipe` installed
 - 29/09/26 — Step 2 (YOLOv8 detection) and Step 3 (MediaPipe landmarks) implemented
+- 23/10/26 — Step 4 started: Kaggle datasets downloaded and raw-copied for shoes, pants, beard; manual collection started for shirt-tuck and hair

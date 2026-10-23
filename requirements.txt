@@ -2,3 +2,4 @@ ultralytics
 mediapipe
 opencv-python
 torch
+kagglehub
