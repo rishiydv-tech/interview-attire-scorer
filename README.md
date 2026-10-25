@@ -134,3 +134,5 @@ _Not started yet. (Target 15-20 FPS, test different lighting/backgrounds, handle
 - 23/09/26 | 9:39 — `ultralytics`, `mediapipe` installed
 - 29/09/26 — Step 2 (YOLOv8 detection) and Step 3 (MediaPipe landmarks) implemented
 - 23/10/26 — Step 4 started: Kaggle datasets downloaded and raw-copied for shoes, pants, beard; manual collection started for shirt-tuck and hair
+
+- Shoes: Boot (5000 raw) not used yet. TODO after prototype: review ~200 samples, sort into formal / sports.
